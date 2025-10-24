@@ -5,7 +5,7 @@ let chat: Chat | null = null;
 function getChatInstance(): Chat {
   if (!chat) {
     if (!process.env.API_KEY) {
-      throw new Error("API_KEY environment variable not set");
+      throw new Error("API_KEY environment variable not set. Please create a .env.local file and add your API_KEY.");
     }
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     
@@ -31,13 +31,17 @@ export async function* sendMessageStream(
 ): AsyncGenerator<GenerateContentResponse> {
   try {
     const chatInstance = getChatInstance();
-    const result = await chatInstance.sendMessageStream({ message });
+    const result = await chatInstance.sendMessageStream(message);
 
     for await (const chunk of result) {
       yield chunk;
     }
   } catch (error) {
-    console.error("Error sending message to Gemini:", error);
+    if (error instanceof Error) {
+        console.error("Error sending message to Gemini:", error.message);
+    } else {
+        console.error("An unknown error occurred when sending message to Gemini:", error);
+    }
     throw new Error("Failed to get a response from the assistant. Please try again.");
   }
 }

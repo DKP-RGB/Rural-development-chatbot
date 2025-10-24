@@ -1,5 +1,4 @@
 import React from 'react';
-// fix: Corrected import name from USDA_RD_LOGO_B64 to USDA_LOGO_B64 to match the export from assets.ts.
 import { USDA_LOGO_B64 } from './assets';
 
 const SocialIcon: React.FC<{ href: string, path: string, label: string }> = ({ href, path, label }) => (
@@ -18,7 +17,6 @@ const Footer: React.FC = () => {
         {/* Agency Footer */}
         <div className="flex flex-col md:flex-row items-center text-center md:text-left border-b border-gray-500 pb-8 mb-8">
              <a href="#" className="flex items-center mb-4 md:mb-0">
-                {/* fix: Corrected variable name from USDA_RD_LOGO_B64 to USDA_LOGO_B64. */}
                 <img src={USDA_LOGO_B64} alt="USDA RD Logo" className="h-20 mr-4 bg-white p-2 rounded-full"/>
                 <div>
                   <h2 className="text-2xl font-bold font-serif">Rural Development</h2>

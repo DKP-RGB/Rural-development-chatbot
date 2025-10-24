@@ -1,6 +1,5 @@
 import React from 'react';
 import { NAV_LINKS } from '../constants';
-// fix: Corrected import name from USDA_RD_LOGO_B64 to USDA_LOGO_B64 to match the export from assets.ts.
 import { US_FLAG_B64, USDA_LOGO_B64 } from './assets';
 
 const GovBanner: React.FC = () => (
@@ -19,7 +18,6 @@ const Header: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center py-4">
           <a href="#" className="flex items-center">
-            {/* fix: Corrected variable name from USDA_RD_LOGO_B64 to USDA_LOGO_B64. */}
             <img src={USDA_LOGO_B64} alt="USDA RD Logo" className="h-16 mr-4"/>
             <div>
               <h1 className="text-xl font-bold text-usda-blue font-serif">Rural Development</h1>
