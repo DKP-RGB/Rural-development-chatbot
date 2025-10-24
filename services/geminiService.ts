@@ -1,12 +1,12 @@
+
 import { GoogleGenAI, Chat, GenerateContentResponse } from "@google/genai";
 
 let chat: Chat | null = null;
 
 function getChatInstance(): Chat {
   if (!chat) {
-    // FIX: Per coding guidelines, the API key must be read from `process.env.API_KEY`.
-    // The previous implementation used `import.meta.env.VITE_API_KEY` and included a check for its existence, which violated the guidelines and caused a TypeScript error.
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    // FIX: Use process.env.API_KEY as per the coding guidelines to resolve the TypeScript error.
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
     
     chat = ai.chats.create({
       model: 'gemini-2.5-flash',
