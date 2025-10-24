@@ -1,0 +1,5 @@
+{
+  "name": "USDA RD Chatbot Assistant",
+  "description": "A chatbot website inspired by the USDA Rural Development homepage. It features an AI assistant powered by Gemini to answer questions about USDA programs using real-time information from the official website.",
+  "requestFramePermissions": []
+}
