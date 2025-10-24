@@ -1,46 +1,44 @@
+import type { GenerateContentResponse } from "@google/genai";
 
-import { GoogleGenAI, Chat, GenerateContentResponse } from "@google/genai";
+// Mock response to simulate Gemini API
+const mockResponse: GenerateContentResponse = {
+  text: `<p>Thank you for your question! While I am currently running in offline mode without a connection to the live Gemini API, I can tell you that USDA Rural Development offers a wide range of programs.</p>
+         <p>For specific details, please visit the official USDA RD website or connect this application to the Gemini API.</p>
+         <ul>
+            <li>Housing Assistance</li>
+            <li>Business & Industry Loans</li>
+            <li>Community Facilities Grants</li>
+         </ul>`,
+  candidates: [],
+  promptFeedback: undefined,
+  usageMetadata: undefined,
+  functionCalls: [],
+};
 
-let chat: Chat | null = null;
 
-function getChatInstance(): Chat {
-  if (!chat) {
-    // FIX: Use process.env.API_KEY as per the coding guidelines to resolve the TypeScript error.
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
-    
-    chat = ai.chats.create({
-      model: 'gemini-2.5-flash',
-      config: {
-        systemInstruction: `You are the 'RD Assistant', a helpful AI expert for the USDA Rural Development (RD) program. Your goal is to provide clear, complete, and direct answers within this chat.
+// Simulate a network delay for a more realistic feel
+const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
-- **Provide Full Summaries:** When asked about USDA RD programs, eligibility, or application processes, you MUST summarize the information from official sources and present it directly. Do not just provide links.
-- **Format for Readability:** Use simple HTML for formatting. Wrap paragraphs in \`<p>\` tags. Use \`<strong>\` for bold text, and \`<ul>\` with \`<li>\` for bulleted lists. Do not use any other HTML tags.
-- **No Code or Technical Jargon:** Your responses should be in plain English. Do not include any code, JSON, or complex HTML structures in your final answer.
-- **Stay On Topic:** Only answer questions about USDA Rural Development.
-- **Use Official Information:** Base your answers on data from the official USDA RD website (rd.usda.gov) and its subpages.`,
-        tools: [{ googleSearch: {} }],
-      },
-    });
-  }
-  return chat;
-}
 
 export async function* sendMessageStream(
   message: string
 ): AsyncGenerator<GenerateContentResponse> {
-  try {
-    const chatInstance = getChatInstance();
-    const result = await chatInstance.sendMessageStream({ message });
+  console.log("Using mock service. Message received:", message);
+  
+  // Simulate a streaming effect by sending the response in chunks
+  const responseText = mockResponse.text;
+  const chunkSize = 50;
 
-    for await (const chunk of result) {
-      yield chunk;
+  try {
+    for (let i = 0; i < responseText.length; i += chunkSize) {
+        const chunkContent = responseText.substring(i, i + chunkSize);
+        await delay(50); // small delay between chunks
+        
+        // We only need to yield the text part for the mock.
+        yield { text: chunkContent } as GenerateContentResponse;
     }
   } catch (error) {
-    if (error instanceof Error) {
-        console.error("Error sending message to Gemini:", error.message);
-    } else {
-        console.error("An unknown error occurred when sending message to Gemini:", error);
-    }
-    throw new Error("Failed to get a response from the assistant. Please try again.");
+    console.error("An error occurred in the mock service:", error);
+    yield { text: "<p>Sorry, an unexpected error occurred in the mock service.</p>" } as GenerateContentResponse;
   }
 }

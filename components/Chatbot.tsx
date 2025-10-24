@@ -74,8 +74,6 @@ const Chatbot: React.FC = () => {
 
     try {
       let fullResponse = '';
-      let sources: GroundingSource[] = [];
-
       const stream = sendMessageStream(message);
       const EXPAND_THRESHOLD = 400;
 
@@ -90,23 +88,15 @@ const Chatbot: React.FC = () => {
             prev.map((msg) => (msg.id === modelMessageId ? { ...msg, content: fullResponse } : msg))
           );
         }
-
-        const groundingMetadata = chunk.candidates?.[0]?.groundingMetadata;
-        if (groundingMetadata?.groundingChunks) {
-            const newSources = groundingMetadata.groundingChunks
-              .filter(c => c.web && c.web.uri)
-              .map(c => ({ uri: c.web.uri, title: c.web.title || c.web.uri } as GroundingSource));
-            sources = [...newSources];
-        }
       }
       
       setMessages((prev) =>
-        prev.map((msg) => (msg.id === modelMessageId ? { ...msg, content: fullResponse, sources: sources.length > 0 ? sources : undefined } : msg))
+        prev.map((msg) => (msg.id === modelMessageId ? { ...msg, content: fullResponse } : msg))
       );
 
     } catch (error) {
        setMessages((prev) =>
-        prev.map((msg) => (msg.id === modelMessageId ? { ...msg, content: '<p>Sorry, I encountered an error. Please check your API key or try again later.</p>' } : msg))
+        prev.map((msg) => (msg.id === modelMessageId ? { ...msg, content: '<p>Sorry, I encountered an error. Please try again later.</p>' } : msg))
       );
     } finally {
       setIsLoading(false);
