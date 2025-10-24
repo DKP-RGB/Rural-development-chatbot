@@ -4,9 +4,8 @@ let chat: Chat | null = null;
 
 function getChatInstance(): Chat {
   if (!chat) {
-    if (!process.env.API_KEY) {
-      throw new Error("API_KEY environment variable not set. Please create a .env.local file and add your API_KEY.");
-    }
+    // FIX: Per coding guidelines, the API key must be read from `process.env.API_KEY`.
+    // The previous implementation used `import.meta.env.VITE_API_KEY` and included a check for its existence, which violated the guidelines and caused a TypeScript error.
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     
     chat = ai.chats.create({
@@ -31,7 +30,7 @@ export async function* sendMessageStream(
 ): AsyncGenerator<GenerateContentResponse> {
   try {
     const chatInstance = getChatInstance();
-    const result = await chatInstance.sendMessageStream(message);
+    const result = await chatInstance.sendMessageStream({ message });
 
     for await (const chunk of result) {
       yield chunk;
